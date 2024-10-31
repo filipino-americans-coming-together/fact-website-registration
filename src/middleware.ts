@@ -8,6 +8,7 @@ import { ResponseData } from "./util/types";
 
 export async function middleware(request: NextRequest) {
     // TODO REMOVE ONCE BACKEND IS UP
+    return;
     return NextResponse.error();
     // return;
 

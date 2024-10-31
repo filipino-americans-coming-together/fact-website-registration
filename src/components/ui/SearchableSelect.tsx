@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useRef, useState } from "react";
 import { FaAngleDown } from "react-icons/fa";
 
 interface SearchableSelectProps {
-    options: { label: string; value: string }[];
+    options: { label: string; value: string; selectable?: boolean }[];
     id: string;
     label: string;
     setState: (state: Object) => void;
@@ -112,7 +112,7 @@ function SearchableSelect<T>({
 
             {showOptions && (
                 <div
-                    className="absolute w-full top-14 z-20 max-h-[20vh] overflow-y-scroll bg-white text-background-primary divide-y border flex flex-col"
+                    className="absolute w-full top-14 z-20 max-h-[40vh] overflow-y-scroll bg-white text-background-primary divide-y border flex flex-col"
                     id={id}
                 >
                     {options
@@ -122,37 +122,55 @@ function SearchableSelect<T>({
 
                             return toTest.test(option.label);
                         })
-                        .map((option) => (
-                            <button
-                                className="px-2 py-1 text-left hover:bg-slate-100 hover:cursor-pointer"
-                                key={option.value}
-                                onClick={() => {
-                                    setShowOptions(false);
-                                    setState((prevState: Object) => ({
-                                        ...prevState,
-                                        [id]: option.value,
-                                    }));
-                                    setSelected(option.label);
-                                }}
-                                type="button"
-                            >
-                                <input
-                                    type="radio"
-                                    name={label}
-                                    value={option.value}
-                                    id={label + option.value.toString()}
-                                    checked={option.label === selected}
-                                    hidden
-                                    readOnly
-                                />
-                                <label
-                                    htmlFor={label + option.value.toString()}
-                                    className="pointer-events-none"
-                                >
-                                    {option.label}
-                                </label>
-                            </button>
-                        ))}
+                        .map((option) => {
+                            // if selectable doesn't exist, assume selectable
+                            if (option.selectable === undefined ? true : option.selectable) {
+                                return (
+                                    <button
+                                        className="px-2 py-1 text-left hover:bg-slate-100 hover:cursor-pointer"
+                                        key={option.value}
+                                        onClick={() => {
+                                            setShowOptions(false);
+                                            setState((prevState: Object) => ({
+                                                ...prevState,
+                                                [id]: option.value,
+                                            }));
+                                            setSelected(option.label);
+                                        }}
+                                        type="button"
+                                    >
+                                        <input
+                                            type="radio"
+                                            name={label}
+                                            value={option.value}
+                                            id={label + option.value.toString()}
+                                            checked={option.label === selected}
+                                            hidden
+                                            readOnly
+                                        />
+                                        <label
+                                            htmlFor={
+                                                label + option.value.toString()
+                                            }
+                                            className="pointer-events-none"
+                                        >
+                                            {option.label}
+                                        </label>
+                                    </button>
+                                );
+                            } else {
+                                return (
+                                    <div
+                                        className="px-2 py-1 text-left bg-slate-200 text-slate-600"
+                                        key={option.value}
+                                    >
+                                        <div className="pointer-events-none">
+                                            {option.label} - FULL
+                                        </div>
+                                    </div>
+                                );
+                            }
+                        })}
                 </div>
             )}
         </div>

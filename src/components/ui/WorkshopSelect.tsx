@@ -1,6 +1,7 @@
-import { WorkshopData } from "@/util/types";
+import { WorkshopData, WorkshopDetails } from "@/util/types";
 import { useWorkshops } from "@/hooks/api/useWorkshops";
 import SearchableSelect from "./SearchableSelect";
+import useManyWorkshopDetails from "@/hooks/api/useManyWorkshopDetails";
 
 interface WorkshopSelectProps {
     id: string;
@@ -26,10 +27,13 @@ function WorkshopSelect({
     required = true,
 }: WorkshopSelectProps) {
     const { workshops } = useWorkshops();
+    const { data: workshopDetails } = useManyWorkshopDetails(
+        workshops?.map((workshops) => workshops.id) || []
+    );
 
     return (
-        workshops &&
-        workshops.length > 0 && (
+        workshopDetails &&
+        workshopDetails.length > 0 && (
             <SearchableSelect
                 id={id}
                 label={`Session ${session}`}
@@ -46,14 +50,18 @@ function WorkshopSelect({
                     //       .id.toString()
                 }
                 required={required}
-                options={workshops
+                options={workshopDetails
                     .filter(
-                        (workshop: WorkshopData) => workshop.session == session
+                        (workshop: WorkshopDetails) =>
+                            workshop.workshop.session == session
                     )
-                    .map((workshop) => {
+                    .map((workshop: WorkshopDetails) => {
                         return {
-                            label: workshop.title,
-                            value: workshop.id.toString(),
+                            label: workshop.workshop.title,
+                            value: workshop.workshop.id.toString(),
+                            selectable:
+                                workshop.registrations <
+                                workshop.location.capacity,
                         };
                     })}
             />

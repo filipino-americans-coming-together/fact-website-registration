@@ -59,6 +59,13 @@ export interface WorkshopData {
     location: number;
 }
 
+export interface WorkshopDetails {
+    workshop: WorkshopData;
+    location: LocationData;
+    facilitator_assistants?: { name: string; contact: string };
+    registrations: number;
+}
+
 export interface RegistrationData {
     delegate: number;
     workshop: number;

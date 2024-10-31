@@ -7,7 +7,7 @@ import {
 } from "@/util/types";
 import { useQuery } from "@tanstack/react-query";
 
-async function fetchWorkshop({ id }: { id: number }): Promise<{
+export async function fetchWorkshop({ id }: { id: number }): Promise<{
     workshop: WorkshopData;
     location: LocationData;
     registrations: number;
